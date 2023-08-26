@@ -242,9 +242,9 @@ reinstall_debian() {
   display_info "Installing debian..."
   if [[  `curl -s api.baka.cafe?isCN` == '1' ]]; then
     display_success "Region: \e[1mChina\e[0m, set the system repo to \e[1mUSTC\e[0m."
-    curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a --mirror 'http://mirrors.ustc.edu.cn/debian'
+    curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a --mirror 'http://mirrors.ustc.edu.cn/debian' -p 'repo.host'
   else
-    curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a -p 'Kilin111'
+    curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a -p 'repo.host'
     #display_error "No CN"
   fi
   display_success "Rebooting..."
