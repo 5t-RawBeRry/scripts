@@ -238,20 +238,6 @@ install_docker() {
   fi
 }
 
-reinstall_debian() {
-  display_info "Installing debian..."
-  if [[  `curl -s api.baka.cafe?isCN` == '1' ]]; then
-    display_success "Region: \e[1mChina\e[0m, set the system repo to \e[1mUSTC\e[0m."
-    curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a --mirror 'http://mirrors.ustc.edu.cn/debian' -p 'repo.host'
-  else
-    curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a -p 'repo.host'
-    #display_error "No CN"
-  fi
-  display_success "Rebooting..."
-}
-
-
-
 declare -g current_user=$(whoami)
 
 check_root_privileges
@@ -273,9 +259,6 @@ case "$1" in
   "environment")
     setup_environment
     ;;
-  "reinstall")
-    reinstall_debian
-    ;;
   "bbr")
     install_bbr "$2"
     ;;
@@ -288,7 +271,7 @@ case "$1" in
     fi
     ;;
   *)
-    display_error "Invalid argument. Please specify one of the following: \e[1mssh-key, ssh, docker, system, environment, reinstall, create-user\e[0m"
+    display_error "Invalid argument. Please specify one of the following: \e[1mssh-key, ssh, docker, system, environment, create-user\e[0m"
     exit 1
     ;;
 esac
