@@ -184,7 +184,7 @@ setup_environment() {
   display_success "Wakatime installed."
   
   display_info "Configuring Zsh..."
-  curl -o ~/.zshrc https://s.repo.host/addons/.zshrc > /dev/null 2>&1
+  curl -o ~/.zshrc https://s.repo.host/addons/zshrc > /dev/null 2>&1
   display_success "Zsh configured."
   
   display_info "Changing default shell..."
