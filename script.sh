@@ -201,9 +201,12 @@ install_bbr() {
 
   if [[ -f "/etc/debian_version" ]]; then
     if [[ "$setup" == "-s" ]]; then
+      
+      display_success "Enabling BBR..."
       echo "net.core.default_qdisc = fq" >> /etc/sysctl.conf
       echo "net.ipv4.tcp_congestion_control = bbr" >> /etc/sysctl.conf
       sysctl -p
+      display_success "BBR enabled."
     else
       display_info "Downloading BBR kernel..."
       curl -o /tmp/linux-headers-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb https://s.repo.host/addons/linux-headers-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
