@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#CD968D">
+    <meta name="msapplication-navbutton-color" content="#CD968D">
+    <link rel="icon" href="https://static.codemao.cn/sfs/album/isvwdndh80edd8yg6b1nb357l2m25vny0w21o2sq.png">
+    <title>[ Script : M00NF4CE ]</title>
+    <style>
+        @font-face {
+            font-family: pixel;
+            src: url(https://static.codemao.cn/sfs/album/g9s292swyqmv8rrf0bcqoqzfd2q2cynht8sh8pux.woff2);
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        * {
+            font-family: 'pixel';
+            margin: 0;
+            padding: 0;
+        }
+
+        .backgroundImg {
+            width: 100%;
+            height: 90vh;
+            z-index: -10;
+            position: absolute;
+            background: url(./images/background.jpg) no-repeat center fixed;
+            filter: blur(2px);
+        }
+
+        body,
+        .container,
+        .footer {
+            display: flex;
+            width: 100%;
+        }
+
+        body {
+            background-color: rgb(233, 226, 225);
+            height: 100%;
+        }
+
+        .items,
+        .container,
+        body {  
+            flex-direction: column;
+        }
+
+        .container,
+        .footer {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            height: 95%;
+            font-size: 120%;
+        }
+
+        .footer {
+            height: 5%;
+        }
+
+        a {  
+            text-decoration:none;
+            color: rgb(0, 0, 0, 0.8);
+            font-weight: 700;
+        }
+
+        a:hover {
+            color: rgb(0, 0, 0);
+            filter: blur(1px);
+        }
+
+        div > h1 {
+            font-size: 200%;
+        }
+
+        h1 > b {
+            animation: blink 3s infinite;
+        }
+
+        .title {
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1><b>curl -sSL https://static.baka.cafe/script.sh | bash -s --</b></h1>
+        </div>
+    </div>
+    <div class="footer">
+        <div>
+            <p>© 2023 
+                <a href="https://baka.cafe" target="_blank">M00NF4CE</a>. | 
+                <b><span title="No hidden path ahead. -- Elden Ring">No hidden path ahead.</span></b>
+            </p>
+        </div>
+    </div>  
+</body>
+</html>

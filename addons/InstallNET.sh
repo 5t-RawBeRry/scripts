@@ -2,7 +2,7 @@
 
 ## License: GPL
 ## It can reinstall Debian, Ubuntu, CentOS system with network.
-## Default root password: MoeClub.org
+## Default root password: repo.host
 ## Blog: https://moeclub.org
 ## Written By MoeClub.org
 
@@ -322,7 +322,7 @@ elif [[ "$Relese" == 'CentOS' ]]; then
 fi
 [ -n "$tmpWORD" ] && dependence openssl
 [[ -n "$tmpWORD" ]] && myPASSWORD="$(openssl passwd -1 "$tmpWORD")";
-[[ -z "$myPASSWORD" ]] && myPASSWORD='$1$0cBeB8j8$XIGdS0ZTVlvhwGulOAY2C0';
+[[ -z "$myPASSWORD" ]] && myPASSWORD='$1$Zrz.baBi$K0f0H3aTAXoZlWy6YDUQk.';
 
 tempDisk=`getDisk`; [ -n "$tempDisk" ] && IncDisk="$tempDisk"
 
