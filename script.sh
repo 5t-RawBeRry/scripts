@@ -213,37 +213,37 @@ install_bbr() {
       display_success "BBR kernel downloaded."
 
       display_info "Installing BBR kernel..."
-      sudo apt install /tmp/linux-*-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb  > /dev/null 2>&1
+      sudo apt install /tmp/linux-*-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb > /dev/null 2>&1
       display_success "BBR kernel installed."
 
       rm /tmp/linux-*-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
     fi
   else
     display_error "Unsupported distribution. Unable to set up the environment."
-    exit 1
+    return 1
   fi
-
 }
 
 install_docker() {
-  display_info "Installing docker..."
+  display_info "Installing Docker..."
   if command -v docker >/dev/null 2>&1; then
-    display_info "Docker is installed, skip it."
+    display_info "Docker is already installed, skipping installation."
   else
-    curl -sSL https://get.docker.com | sh  > /dev/null 2>&1
+    curl -sSL https://get.docker.com | sh > /dev/null 2>&1
     display_success "Docker installed."
   fi
-  if [[  $current_user != "root" ]]; then
-    display_info "Granting docker privileges to user '$current_user'..."
+
+  if [[ $current_user != "root" ]]; then
+    display_info "Granting Docker privileges to user '$current_user'..."
     sudo usermod -aG docker "$current_user"
     display_success "Docker privileges granted to user '$current_user'."
   fi
 }
 
 reinstall_debian() {
-  display_info "Installing debian..."
-  if [[  `curl -s api.baka.cafe?isCN` == '1' ]]; then
-    display_success "Region: \e[1mChina\e[0m, set the system repo to \e[1mUSTC\e[0m."
+  display_info "Installing Debian..."
+  if [[ $(curl -s api.baka.cafe?isCN) == '1' ]]; then
+    display_success "Region: \e[1mChina\e[0m, setting the system repo to \e[1mUSTC\e[0m."
     curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a --mirror 'http://mirrors.ustc.edu.cn/debian' -p 'repo.host'
   else
     curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a -p 'repo.host'
