@@ -288,7 +288,7 @@ case "$1" in
     fi
     ;;
   *)
-    display_error "Invalid argument. Please specify one of the following: \e[1mssh-key, ssh, docker, system, environment, reinstall, create-user\e[0m"
+    display_error "Invalid argument. Please specify one of the following: \e[1mssh-key, ssh, bbr, docker, system, environment, reinstall, create-user\e[0m"
     exit 1
     ;;
 esac
