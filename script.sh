@@ -211,7 +211,7 @@ install_bbr() {
       display_success "BBR kernel downloaded."
 
       display_info "Installing BBR kernel..."
-      sudo apt install /tmp/linux-*-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
+      sudo apt install /tmp/linux-*-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb  > /dev/null 2>&1
       display_success "BBR kernel installed."
 
       rm /tmp/linux-*-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
