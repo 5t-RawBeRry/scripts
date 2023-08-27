@@ -60,6 +60,33 @@ install_package() {
   display_success "Packages installed."
 }
 
+configure_ssh_key() {
+  local ssh_dir=~/.ssh
+  local authorized_keys="$ssh_dir/authorized_keys"
+  local public_key='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMj1ZURxNE8MV9OkwEYruwBNQDgn61k0u2wQNWIxu7P i@i.ls'
+
+  if [[ -d "$ssh_dir" ]]; then
+    display_success "The \e[1m$ssh_dir\e[0m directory already exists."
+  else
+    display_info "Creating the \e[1m$ssh_dir\e[0m directory..."
+    mkdir -p "$ssh_dir"
+  fi
+
+  if [ -f "$authorized_keys" ]; then
+    display_success "The \e[1m$authorized_keys\e[0m file already exists."
+  else
+    display_info "Creating the \e[1m$authorized_keys\e[0m file..."
+    touch "$authorized_keys"
+  fi
+
+  if grep -q "$public_key" "$authorized_keys"; then
+    display_success "The public key already exists in \e[1mauthorized_keys\e[0m."
+  else
+    echo "$public_key" >> "$authorized_keys"
+    display_success "SSH public key added to \e[1mauthorized_keys\e[0m."
+  fi
+}
+
 # Function to create a new user
 create_user() {
   local username=$1
