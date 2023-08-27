@@ -10,6 +10,11 @@ display_success() {
   echo -e "\e[32m[S]\e[0m $1"
 }
 
+# Function to display a warning message
+display_warning() {
+  echo -e "\e[33m[W]\e[0m $1"
+}
+
 # Function to display an error message
 display_error() {
   echo -e "\e[31m[E]\e[0m $1"
