@@ -42,8 +42,6 @@ install_package() {
   local package_manager=""
   if command -v apt >/dev/null 2>&1; then
     package_manager="apt"
-  elif command -v pacman >/dev/null 2>&1; then
-    package_manager="pacman"
   elif command -v yum >/dev/null 2>&1; then
     package_manager="yum"
   else
@@ -56,9 +54,19 @@ install_package() {
   display_success "$package_manager package lists updated."
 
   display_info "Installing required packages..."
-  sudo "$package_manager" install -y "$@" > /dev/null 2>&1
-  display_success "Packages installed."
+
+  for package in "$@"; do
+    if sudo "$package_manager" list --installed "$package" >/dev/null 2>&1; then
+      display_warning "Package '$package' is already installed. Skipping..."
+    else
+      sudo "$package_manager" install -y "$package" >/dev/null 2>&1
+      display_success "Package '$package' installed."
+    fi
+  done
+
+  display_success "All packages installed."
 }
+
 
 configure_ssh_key() {
   local ssh_dir=~/.ssh
@@ -233,19 +241,11 @@ reinstall_debian() {
 install_caddy() {
   display_info "Installing Caddy..."
 
-  display_info "Updating package lists..."
-  sudo apt update > /dev/null 2>&1
-  display_success "Package lists updated."
-
   install_package gnupg apt-transport-https lsb-release
 
   curl -sSL https://dl.cloudsmith.io/public/caddy/stable/gpg.key | gpg --dearmor | sudo tee /usr/share/keyrings/caddy.gpg >/dev/null
 
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/caddy.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/caddy.list
-
-  display_info "Updating package lists..."
-  sudo apt update > /dev/null 2>&1
-  display_success "Package lists updated."
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/caddy.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/caddy.list >/dev/null
 
   install_package caddy
 
