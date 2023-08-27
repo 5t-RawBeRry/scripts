@@ -265,41 +265,51 @@ declare -g current_user=$(whoami)
 check_root_privileges
 
 # Check the argument and execute the corresponding function
-case "$1" in
-  "ssh-key")
-    configure_ssh_key
-    ;;
-  "ssh")
-    configure_ssh
-    ;;
-  "docker")
-    install_docker
-    ;;
-  "system")
-    configure_system
-    ;;
-  "environment")
-    setup_environment
-    ;;
-  "reinstall")
-    reinstall_debian
-    ;;
-  "bbr")
-    install_bbr "$2"
-    ;;
-  "caddy")
-    install_caddy
-    ;;
-  "create-user")
-    if [[ -n "$2" ]]; then
-      create_user "$2" "$3"
-    else
-      display_error "Username is required. Usage: ./script.sh create-user <username> [password]"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    "ssh-key")
+      configure_ssh_key
+      ;;
+    "ssh")
+      configure_ssh
+      ;;
+    "docker")
+      install_docker
+      ;;
+    "system")
+      configure_system
+      ;;
+    "environment")
+      setup_environment
+      ;;
+    "reinstall")
+      reinstall_debian
+      ;;
+    "bbr")
+      if [[ -n "$2" ]]; then
+        install_bbr "$2"
+        shift
+      else
+        display_error "Argument is required for 'bbr' command. Usage: ./script.sh bbr <argument>"
+        exit 1
+      fi
+      ;;
+    "caddy")
+      install_caddy
+      ;;
+    "create-user")
+      if [[ -n "$2" ]]; then
+        create_user "$2" "$3"
+        shift 2
+      else
+        display_error "Username is required for 'create-user' command. Usage: ./script.sh create-user <username> [password]"
+        exit 1
+      fi
+      ;;
+    *)
+      display_error "Invalid argument: $1. Please specify one of the following: ssh-key, ssh, bbr, caddy, docker, system, environment, reinstall, create-user"
       exit 1
-    fi
-    ;;
-  *)
-    display_error "Invalid argument. Please specify one of the following: \e[1mssh-key, ssh, bbr, caddy, docker, system, environment, reinstall, create-user\e[0m"
-    exit 1
-    ;;
-esac
+      ;;
+  esac
+  shift
+done
