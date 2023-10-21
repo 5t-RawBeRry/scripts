@@ -5,6 +5,52 @@ display_success() { echo -e "\e[32m[S]\e[0m $1"; }
 display_warning() { echo -e "\e[33m[W]\e[0m $1"; }
 display_error()   { echo -e "\e[31m[E]\e[0m $1"; exit 1; }
 
+print_detailed_help() {
+  case "$1" in
+    ssh-key)
+      echo "Usage: $0 ssh-key"
+      echo "Configure the SSH key for secure remote access."
+      ;;
+    ssh)
+      echo "Usage: $0 ssh"
+      echo "Fine-tune the SSH server settings."
+      ;;
+    docker)
+      echo "Usage: $0 docker"
+      echo "Install Docker for containerized applications."
+      ;;
+    system)
+      echo "Usage: $0 system"
+      echo "Update system's hostname, locale, and timezone settings."
+      ;;
+    environment)
+      echo "Usage: $0 environment"
+      echo "Set up a user-friendly shell and development tools."
+      ;;
+    reinstall)
+      echo "Usage: $0 reinstall"
+      echo "Perform a clean reinstallation of Debian."
+      ;;
+    bbr)
+      echo "Usage: $0 bbr [-s]"
+      echo "Optimize network performance with BBR. Use -s to apply system settings without kernel update."
+      ;;
+    caddy)
+      echo "Usage: $0 caddy"
+      echo "Install Caddy web server."
+      ;;
+    create-user)
+      echo "Usage: $0 create-user [username] [password]"
+      echo "Create a new user with sudo privileges. You need to provide a username and a password."
+      ;;
+    *)
+      echo "Invalid command for detailed help. Here's the general usage:"
+      print_help
+      ;;
+  esac
+}
+
+# 调整原始的 print_help 函数以简化输出
 print_help() {
   cat << EOF
 Usage: $0 <command> [options]
@@ -20,9 +66,8 @@ Available commands:
   caddy          Install Caddy web server.
   create-user    Create a new user with sudo privileges.
 
-For more details, specify a command. Example: $0 ssh-key
+For detailed help, use: $0 help <command>
 EOF
-  exit 0
 }
 
 if [[ ! -f "/etc/debian_version" && "$1" != "reinstall" ]]; then
@@ -145,6 +190,7 @@ install_caddy() {
 current_user=$(whoami)
 
 case "$1" in
+  help)           shift; print_detailed_help "$@" ;;
   ssh-key)        configure_ssh_key ;;
   ssh)            configure_ssh ;;
   docker)         install_docker ;;
