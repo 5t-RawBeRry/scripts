@@ -1,6 +1,6 @@
 # Debian System Configuration Script
 
-**要快速了解，请查看[README.zh.md](./README.zh.md)中的内容。**
+**要快速了解，请查看 [README.zh.md](./README.zh.md) 中的内容。**
 
 This BASH script serves as a collection of utilities for Debian systems designed to automate a variety of system configuration tasks remotely. These tasks range from security settings, performance optimizations, software installations, to system management tasks.
 
