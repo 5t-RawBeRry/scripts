@@ -24,6 +24,11 @@ print_help() {
   exit 0
 }
 
+# Check if the operating system is Debian or if the user wants to reinstall Debian
+if [[ ! -f "/etc/debian_version" && "$1" != "reinstall" ]]; then
+  display_error "Unsupported system. This script is designed for Debian systems only."
+fi
+
 check_root_privileges() {
   if [[ $EUID -ne 0 ]]; then
     sudo -v || display_error "Failed to obtain sudo privileges."
