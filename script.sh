@@ -139,12 +139,9 @@ configure_system() {
 
 setup_environment() {
   display_info "Initializing environment setup..."
-  install_package zsh curl && display_info "Essential packages installed."
-  sudo curl -sSL https://bootstrap.pypa.io/get-pip.py | sudo python3 && display_info "pip installed."
-  sudo pip3 install wakatime && display_info "wakatime installed."
-  curl -o ~/.zshrc https://s.repo.host/addons/zshrc && display_info "zsh configuration file fetched."
-  sudo chsh -s $(command -v zsh) "$current_user" && display_info "Default shell changed to zsh for '$current_user'."
-  zsh
+  install_package fish && display_info "Essential packages installed."
+  sudo chsh -s $(command -v fish) "$current_user" && display_info "Default shell changed to fish for '$current_user'."
+  fish
   display_success "Environment setup completed."
 }
 
