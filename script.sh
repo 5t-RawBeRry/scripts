@@ -71,7 +71,7 @@ For detailed help, use: $0 help <command>
 EOF
 }
 
-if [[ ! -f "/etc/debian_version" && "$1" != "reinstall" ]]; then
+if [[ ! -f "/etc/debian_version" && "$1" != "reinstall" && "$1" != "ssh-key" ]]; then
   display_error "Unsupported system. Script for Debian only."
 fi
 
