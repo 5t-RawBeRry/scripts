@@ -1,65 +1,24 @@
 #!/bin/bash
 
-# Function to display an informational message
-display_info() {
-  echo -e "\e[34m[I]\e[0m $1"
-}
+# Colorful print functions
+display_info()    { echo -e "\e[34m[I]\e[0m $1"; }
+display_success() { echo -e "\e[32m[S]\e[0m $1"; }
+display_warning() { echo -e "\e[33m[W]\e[0m $1"; }
+display_error()   { echo -e "\e[31m[E]\e[0m $1"; exit 1; }
 
-# Function to display a success message
-display_success() {
-  echo -e "\e[32m[S]\e[0m $1"
-}
-
-# Function to display a warning message
-display_warning() {
-  echo -e "\e[33m[W]\e[0m $1"
-}
-
-# Function to display an error message
-display_error() {
-  echo -e "\e[31m[E]\e[0m $1"
-}
-
-# Function to check if the script is running with root privileges
 check_root_privileges() {
   if [[ $EUID -ne 0 ]]; then
-    if sudo -v; then
-      display_success "Sudo privileges granted."
-    else
-      display_error "Failed to obtain sudo privileges."
-      exit 1
-    fi
+    sudo -v || display_error "Failed to obtain sudo privileges."
   fi
-
-  if ! command -v sudo >/dev/null 2>&1; then
-    display_info "Installing sudo..."
-    install_package sudo
-    if ! command -v sudo >/dev/null 2>&1; then
-      display_error "Failed to install sudo. Please install sudo manually."
-      exit 1
-    fi
-    display_success "sudo installed successfully."
-  fi
+  command -v sudo >/dev/null 2>&1 || (install_package sudo && display_success "sudo installed successfully.")
 }
 
-# Function to install a package using the apt package manager
 install_package() {
-  local package_manager="apt"  # Set package manager to apt
-
-  display_info "Updating $package_manager package lists..."
-  sudo "$package_manager" update > /dev/null 2>&1
-  display_success "$package_manager package lists updated."
-
-  display_info "Installing required packages..."
+  local package_manager="apt"
+  sudo "$package_manager" update -q > /dev/null
   for package in "$@"; do
-    if dpkg -l | grep -qw "$package"; then
-      display_warning "Package '$package' is already installed. Skipping..."
-    else
-      sudo "$package_manager" install -y "$package" >/dev/null 2>&1
-      display_success "Package '$package' installed."
-    fi
+    dpkg -l | grep -qw "$package" || (sudo "$package_manager" install -yq "$package" > /dev/null && display_success "Package '$package' installed.")
   done
-  display_success "All packages installed."
 }
 
 configure_ssh_key() {
@@ -254,51 +213,15 @@ declare -g current_user=$(whoami)
 check_root_privileges
 
 # Check the argument and execute the corresponding function
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    "ssh-key")
-      configure_ssh_key
-      ;;
-    "ssh")
-      configure_ssh
-      ;;
-    "docker")
-      install_docker
-      ;;
-    "system")
-      configure_system
-      ;;
-    "environment")
-      setup_environment
-      ;;
-    "reinstall")
-      reinstall_debian
-      ;;
-    "bbr")
-      if [[ -n "$2" ]]; then
-        install_bbr "$2"
-        shift
-      else
-        display_error "Argument is required for 'bbr' command. Usage: ./script.sh bbr <argument>"
-        exit 1
-      fi
-      ;;
-    "caddy")
-      install_caddy
-      ;;
-    "create-user")
-      if [[ -n "$2" ]]; then
-        create_user "$2" "$3"
-        shift 2
-      else
-        display_error "Username is required for 'create-user' command. Usage: ./script.sh create-user <username> [password]"
-        exit 1
-      fi
-      ;;
-    *)
-      display_error "Invalid argument: $1. Please specify one of the following: ssh-key, ssh, bbr, caddy, docker, system, environment, reinstall, create-user"
-      exit 1
-      ;;
-  esac
-  shift
-done
+case "$1" in
+  ssh-key)         configure_ssh_key ;;
+  ssh)             configure_ssh ;;
+  docker)          install_docker ;;
+  system)          configure_system ;;
+  environment)     setup_environment ;;
+  reinstall)       reinstall_debian ;;
+  bbr)             shift; install_bbr "$@" ;;
+  caddy)           install_caddy ;;
+  create-user)     shift; create_user "$@" ;;
+  *)               display_error "Invalid argument: $1"
+esac
