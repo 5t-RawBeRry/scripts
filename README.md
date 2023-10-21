@@ -81,6 +81,10 @@ This will display more in-depth information about utilizing the particular comma
 - Ensure you back up crucial data before using system-level commands like `reinstall`.
 - Never run scripts remotely without inspecting them first, as they could have profound impacts on your system.
 
-## **Conclusion**
+## **License**
 
-This script offers a convenient way to perform common system configuration and management tasks, especially handy when managing Debian servers remotely. Always ensure you fully comprehend the ramifications before executing any operations, especially in a production environment.
+For the license terms and details regarding this script, please refer to [LICENSE.md](./LICENSE.md).
+
+Before using this script, please make sure you fully understand its licensing conditions. It is the responsibility of each user to comply with relevant laws and terms. If you do not agree with or understand these terms, please do not use this script.
+
+Prior to use, it is recommended that you thoroughly read and ensure you fully agree with its contents. This is to ensure that your usage complies with the requirements of the terms and to avoid any potential risks associated with illegal use or violation of the license terms.
