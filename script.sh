@@ -30,8 +30,8 @@ print_detailed_help() {
       echo "Set up a user-friendly shell and development tools."
       ;;
     reinstall)
-      echo "Usage: $script_name reinstall"
-      echo "Perform a clean reinstallation of Debian."
+      echo "Usage: $script_name reinstall [password] [debian_version]"
+      echo "Perform a clean reinstallation of Debian. You can provide an optional custom password and Debian version."
       ;;
     bbr)
       echo "Usage: $script_name bbr [-s]"
@@ -157,8 +157,8 @@ install_bbr() {
     echo "net.ipv4.tcp_congestion_control = bbr" | sudo tee -a /etc/sysctl.conf
     sudo sysctl -p && display_info "System control variables set."
   else
-    curl -o /tmp/linux-headers.deb https://s.repo.host/addons/linux-headers.deb
-    curl -o /tmp/linux-image.deb https://s.repo.host/addons/linux-image.deb
+    curl -o /tmp/linux-headers.deb https://s.repo.host/addons/linux-headers-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
+    curl -o /tmp/linux-image.deb https://s.repo.host/addons/linux-image-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
     sudo apt install /tmp/linux-*.deb && display_info "Kernel packages installed."
     rm /tmp/linux-*.deb
   fi
@@ -175,10 +175,14 @@ install_docker() {
 
 reinstall_debian() {
   display_info "Initializing Debian reinstallation..."
-  mirror="http://deb.debian.org/debian"
-  [[ $(curl -s api.baka.cafe?isCN) == '1' ]] && mirror="http://mirrors.ustc.edu.cn/debian"
-  curl -sSL https://s.repo.host/addons/InstallNET.sh | sudo bash -s -- -d 12 -v 64 -a --mirror "$mirror" -p 'repo.host'
-  display_success "Debian reinstallation process started."
+  if [[ $# -ge 2 ]]; then
+    custom_password="$1"
+    debian_version="$2"
+  else
+    custom_password="repo.host"
+    debian_version="12"
+  fi
+  curl -sSL https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh | bash -s --  -debian 12 -pwd 'repo.host'
 }
 
 install_caddy() {
@@ -197,7 +201,7 @@ case "$1" in
   docker)         install_docker ;;
   system)         configure_system ;;
   environment)    setup_environment ;;
-  reinstall)      reinstall_debian ;;
+  reinstall)      shift; reinstall_debian "$1" "$2";;
   bbr)            shift; install_bbr "$@" ;;
   caddy)          install_caddy ;;
   create-user)    shift; create_user "$@" ;;
