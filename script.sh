@@ -6,6 +6,24 @@ display_success() { echo -e "\e[32m[S]\e[0m $1"; }
 display_warning() { echo -e "\e[33m[W]\e[0m $1"; }
 display_error()   { echo -e "\e[31m[E]\e[0m $1"; exit 1; }
 
+print_help() {
+  echo "Usage: $0 <command> [options]"
+  echo ""
+  echo "Available commands:"
+  echo "  ssh-key        Configure the SSH key."
+  echo "  ssh            Configure the SSH server."
+  echo "  docker         Install Docker."
+  echo "  system         Configure system settings."
+  echo "  environment    Setup the environment."
+  echo "  reinstall      Reinstall Debian."
+  echo "  bbr            Install BBR."
+  echo "  caddy          Install Caddy."
+  echo "  create-user    Create a new user."
+  echo ""
+  echo "For more details, specify a command. Example: $0 ssh-key"
+  exit 0
+}
+
 check_root_privileges() {
   if [[ $EUID -ne 0 ]]; then
     sudo -v || display_error "Failed to obtain sudo privileges."
@@ -208,9 +226,14 @@ install_caddy() {
   display_info "For more information on configuring Caddy, refer to the official Caddy documentation."
 }
 
+
 declare -g current_user=$(whoami)
 
 check_root_privileges
+
+if [ -z "$1" ]; then
+  print_help
+fi
 
 # Check the argument and execute the corresponding function
 case "$1" in
@@ -223,5 +246,5 @@ case "$1" in
   bbr)             shift; install_bbr "$@" ;;
   caddy)           install_caddy ;;
   create-user)     shift; create_user "$@" ;;
-  *)               display_error "Invalid argument: $1"
+  help|*)          print_help ;;
 esac
