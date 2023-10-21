@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[[ $0 != bash ]] && script_name=$0 || script_name="curl -sSL https://s.repo.host/script.sh | bash -s --"
+
 display_info()    { echo -e "\e[34m[I]\e[0m $1"; }
 display_success() { echo -e "\e[32m[S]\e[0m $1"; }
 display_warning() { echo -e "\e[33m[W]\e[0m $1"; }
@@ -8,39 +10,39 @@ display_error()   { echo -e "\e[31m[E]\e[0m $1"; exit 1; }
 print_detailed_help() {
   case "$1" in
     ssh-key)
-      echo "Usage: $0 ssh-key"
+      echo "Usage: $script_name ssh-key"
       echo "Configure the SSH key for secure remote access."
       ;;
     ssh)
-      echo "Usage: $0 ssh"
+      echo "Usage: $script_name ssh"
       echo "Fine-tune the SSH server settings."
       ;;
     docker)
-      echo "Usage: $0 docker"
+      echo "Usage: $script_name docker"
       echo "Install Docker for containerized applications."
       ;;
     system)
-      echo "Usage: $0 system"
+      echo "Usage: $script_name system"
       echo "Update system's hostname, locale, and timezone settings."
       ;;
     environment)
-      echo "Usage: $0 environment"
+      echo "Usage: $script_name environment"
       echo "Set up a user-friendly shell and development tools."
       ;;
     reinstall)
-      echo "Usage: $0 reinstall"
+      echo "Usage: $script_name reinstall"
       echo "Perform a clean reinstallation of Debian."
       ;;
     bbr)
-      echo "Usage: $0 bbr [-s]"
+      echo "Usage: $script_name bbr [-s]"
       echo "Optimize network performance with BBR. Use -s to apply system settings without kernel update."
       ;;
     caddy)
-      echo "Usage: $0 caddy"
+      echo "Usage: $script_name caddy"
       echo "Install Caddy web server."
       ;;
     create-user)
-      echo "Usage: $0 create-user [username] [password]"
+      echo "Usage: $script_name create-user [username] [password]"
       echo "Create a new user with sudo privileges. You need to provide a username and a password."
       ;;
     *)
@@ -50,10 +52,9 @@ print_detailed_help() {
   esac
 }
 
-# 调整原始的 print_help 函数以简化输出
 print_help() {
   cat << EOF
-Usage: $0 <command> [options]
+Usage: $script_name <command> [options]
 
 Available commands:
   ssh-key        Configure the SSH key for secure remote access.
