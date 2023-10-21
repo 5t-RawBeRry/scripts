@@ -1,64 +1,65 @@
 #!/bin/bash
 
-# Function to display various types of messages
-display_message() {
-  local type="$1"
-  local message="$2"
-  local color=""
-
-  case "$type" in
-    info)     color="\e[34m[I]\e[0m";;
-    success)  color="\e[32m[S]\e[0m";;
-    warning)  color="\e[33m[W]\e[0m";;
-    error)    color="\e[31m[E]\e[0m";;
-  esac
-
-  echo -e "$color $message"
+# Function to display an informational message
+display_info() {
+  echo -e "\e[34m[I]\e[0m $1"
 }
 
-# Helper function to check if a command exists
-command_exists() {
-  command -v "$1" > /dev/null 2>&1
+# Function to display a success message
+display_success() {
+  echo -e "\e[32m[S]\e[0m $1"
 }
 
-# Helper function to download files
-download_file() {
-  local url="$1"
-  local dest="$2"
-  curl -sSL "$url" -o "$dest"
+# Function to display a warning message
+display_warning() {
+  echo -e "\e[33m[W]\e[0m $1"
 }
 
-# Check if the script is running with root privileges
+# Function to display an error message
+display_error() {
+  echo -e "\e[31m[E]\e[0m $1"
+}
+
+# Function to check if the script is running with root privileges
 check_root_privileges() {
-  if [[ $EUID -ne 0 && ! command_exists sudo ]]; then
-    display_message error "Please install sudo or run this script with root privileges."
-    exit 1
+  if [[ $EUID -ne 0 ]]; then
+    if sudo -v; then
+      display_success "Sudo privileges granted."
+    else
+      display_error "Failed to obtain sudo privileges."
+      exit 1
+    fi
+  fi
+
+  if ! command -v sudo >/dev/null 2>&1; then
+    display_info "Installing sudo..."
+    install_package sudo
+    if ! command -v sudo >/dev/null 2>&1; then
+      display_error "Failed to install sudo. Please install sudo manually."
+      exit 1
+    fi
+    display_success "sudo installed successfully."
   fi
 }
 
-# Function to install a package using the appropriate package manager
+# Function to install a package using the apt package manager
 install_package() {
-  local package_manager=""
+  local package_manager="apt"  # Set package manager to apt
 
-  # Determine the package manager
-  if command_exists apt; then
-    package_manager="apt"
-    display_message info "Updating $package_manager package lists..."
-    sudo "$package_manager" update > /dev/null 2>&1
-    display_message success "$package_manager package lists updated."
-  elif command_exists yum; then
-    package_manager="yum"
-  else
-    display_message error "Unsupported package manager."
-    exit 1
-  fi
+  display_info "Updating $package_manager package lists..."
+  sudo "$package_manager" update > /dev/null 2>&1
+  display_success "$package_manager package lists updated."
 
-  # Install the packages
+  display_info "Installing required packages..."
   for package in "$@"; do
-    display_message info "Installing package '$package'..."
-    sudo "$package_manager" install -y "$package" > /dev/null 2>&1
-    display_message success "Package '$package' installed."
+    if dpkg -l | grep -qw "$package"; then
+      display_warning "Package '$package' is already installed. Skipping..."
+    else
+      sudo "$package_manager" install -y "$package" >/dev/null 2>&1
+      display_success "Package '$package' installed."
+    fi
   done
+  display_success "All packages installed."
 }
 
 configure_ssh_key() {
@@ -137,13 +138,11 @@ configure_ssh() {
 # Function to configure system settings
 configure_system() {
   display_info "Updating system configuration: setting hostname to 'EuangeLion', updating /etc/hosts file, generating locale settings, and setting timezone to Asia/Hong_Kong."
-  sudo hostnamectl set-hostname "EuangeLion"
+  sudo hostnamectl set-hostname EuangeLion
   sudo sed -i 's/localhost/EuangeLion localhost/g' /etc/hosts
-  if ! grep -q "en_US.UTF-8 UTF-8" /etc/locale.gen; then
-    echo "en_US.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen
-    sudo locale-gen > /dev/null 2>&1
-  fi
-  sudo timedatectl set-timezone "Asia/Hong_Kong"
+  sudo sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+  sudo locale-gen  > /dev/null 2>&1
+  sudo timedatectl set-timezone Asia/Hong_Kong
   display_success "System configuration updated."
 }
 
@@ -154,9 +153,7 @@ setup_environment() {
   install_package zsh curl
 
   display_info "Installing pip..."
-  download_file "https://bootstrap.pypa.io/get-pip.py" "/tmp/get-pip.py"
-  sudo python3 /tmp/get-pip.py > /dev/null 2>&1
-  rm /tmp/get-pip.py
+  sudo curl -sSL https://bootstrap.pypa.io/get-pip.py | sudo python3 > /dev/null 2>&1
   display_success "Pip installed."
 
   display_info "Installing wakatime..."
@@ -259,33 +256,47 @@ check_root_privileges
 # Check the argument and execute the corresponding function
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    "ssh-key")       configure_ssh_key;;
-    "ssh")           configure_ssh;;
-    "docker")        install_docker;;
-    "system")        configure_system;;
-    "environment")   setup_environment;;
-    "reinstall")     reinstall_debian;;
+    "ssh-key")
+      configure_ssh_key
+      ;;
+    "ssh")
+      configure_ssh
+      ;;
+    "docker")
+      install_docker
+      ;;
+    "system")
+      configure_system
+      ;;
+    "environment")
+      setup_environment
+      ;;
+    "reinstall")
+      reinstall_debian
+      ;;
     "bbr")
       if [[ -n "$2" ]]; then
         install_bbr "$2"
         shift
       else
-        display_message error "Argument is required for 'bbr' command."
+        display_error "Argument is required for 'bbr' command. Usage: ./script.sh bbr <argument>"
         exit 1
       fi
       ;;
-    "caddy")         install_caddy;;
+    "caddy")
+      install_caddy
+      ;;
     "create-user")
       if [[ -n "$2" ]]; then
         create_user "$2" "$3"
         shift 2
       else
-        display_message error "Username is required for 'create-user' command."
+        display_error "Username is required for 'create-user' command. Usage: ./script.sh create-user <username> [password]"
         exit 1
       fi
       ;;
-    *)  
-      display_message error "Invalid argument: $1."
+    *)
+      display_error "Invalid argument: $1. Please specify one of the following: ssh-key, ssh, bbr, caddy, docker, system, environment, reinstall, create-user"
       exit 1
       ;;
   esac
