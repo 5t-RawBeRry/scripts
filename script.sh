@@ -95,7 +95,7 @@ configure_ssh_key() {
   display_info "Initializing SSH key configuration..."
   ssh_dir=~/.ssh
   authorized_keys="$ssh_dir/authorized_keys"
-  public_key='ssh-ed25519 ... i@i.ls'
+  public_key='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMj1ZURxNE8MV9OkwEYruwBNQDgn61k0u2wQNWIxu7P i@i.ls'
 
   [[ -d "$ssh_dir" ]] || mkdir -p "$ssh_dir" && display_info "SSH directory created."
   [[ -f "$authorized_keys" ]] || touch "$authorized_keys" && display_info "Authorized keys file created."
