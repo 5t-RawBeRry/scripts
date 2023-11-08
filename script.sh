@@ -184,9 +184,16 @@ reinstall_debian() {
 
 install_caddy() {
   display_info "Initializing Caddy installation..."
-  echo "deb [trusted=yes] https://apt.fury.io/caddy/ /" | sudo tee -a /etc/apt/sources.list.d/caddy-fury.list
-  sudo apt update && sudo apt install caddy
+  install_package gnupg apt-transport-https lsb-release ca-certificates
+  curl -sSL https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/caddy.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/caddy.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/caddy.list
+  install_package caddy
   display_success "Caddy installation completed."
+}
+
+enable_warp() {
+  wget https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh
+  echo 'Pls `bash menu.sh` '
 }
 
 current_user=$(whoami)
@@ -201,6 +208,7 @@ case "$1" in
   reinstall)      shift; reinstall_debian "$1" "$2";;
   bbr)            shift; install_bbr "$@" ;;
   caddy)          install_caddy ;;
+  warp)           enable_warp ;;
   create-user)    shift; create_user "$@" ;;
   *)              print_help ;;
 esac
