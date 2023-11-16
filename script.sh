@@ -111,7 +111,7 @@ create_user() {
   id -u "$username" >/dev/null 2>&1 && return
   sudo useradd -m -s /bin/bash "$username" && display_info "User '$username' created."
   [[ -n "$password" ]] && echo "$username:$password" | sudo chpasswd && display_info "Password set for user '$username'."
-  if [[ -f /etc/arch-release ]] 
+  if [[ -f /etc/arch-release ]]; then
     sudo usermod -aG wheel "$username"
   else
     sudo usermod -aG sudo "$username"
