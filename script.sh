@@ -111,7 +111,11 @@ create_user() {
   id -u "$username" >/dev/null 2>&1 && return
   sudo useradd -m -s /bin/bash "$username" && display_info "User '$username' created."
   [[ -n "$password" ]] && echo "$username:$password" | sudo chpasswd && display_info "Password set for user '$username'."
-  sudo usermod -aG sudo "$username"
+  if [[ -f /etc/arch-release ]] 
+    sudo usermod -aG wheel "$username"
+  else
+    sudo usermod -aG sudo "$username"
+  fi
   command -v docker >/dev/null 2>&1 && sudo usermod -aG docker "$username"
   display_success "User '$username' created and configured successfully."
 }
@@ -123,7 +127,7 @@ configure_ssh() {
          -e 's/#AuthorizedKeysFile/AuthorizedKeysFile/g' \
          -e 's/PasswordAuthentication yes/PasswordAuthentication no/g' \
          /etc/ssh/sshd_config && display_info "SSH configuration file updated."
-  sudo systemctl restart ssh && display_info "SSH server restarted."
+  sudo systemctl restart sshd && display_info "SSHD server restarted."
   display_success "SSH server configured successfully."
 }
 
