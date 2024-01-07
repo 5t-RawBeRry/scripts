@@ -219,7 +219,7 @@ reinstall_debian() {
 }
 
 install_zen() {
-  if [[ "$lqx" == "-lqx" ]]; then
+  if [[ "$1" == "-lqx" ]]; then
     curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash
   else
     sudo apt install gpg -y
@@ -228,6 +228,14 @@ install_zen() {
     sudo apt update && sudo apt install linux-xanmod-x64v4
   fi
   display_success "ZEN installation completed."
+}
+
+add_swap() {
+  if [[ "$1" == "-zram" ]]; then
+    curl -s 'https://s.repo.host/addons/zram.sh' | sudo bash
+  else
+    curl -s 'https://s.repo.host/addons/swap.sh' | sudo bash
+  fi
 }
 
 install_caddy() {
@@ -256,6 +264,7 @@ case "$1" in
   reinstall)      reinstall_debian ;;
   bbr)            shift; install_bbr "$@" ;;
   zen)            shift; install_zen "$@" ;;
+  swap)           shift; add_swap "$@" ;;
   caddy)          install_caddy ;;
   warp)           enable_warp ;;
   create-user)    shift; create_user "$@" ;;
