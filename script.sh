@@ -232,10 +232,11 @@ install_zen() {
 
 add_swap() {
   if [[ "$1" == "-zram" ]]; then
-    curl -s 'https://s.repo.host/addons/zram.sh' | sudo bash
+    curl -sSL 'https://s.repo.host/addons/zram.sh' -o /tmp/zram.sh && chmod +x /tmp/zram.sh && sudo bash /tmp/zram.sh
   else
-    curl -s 'https://s.repo.host/addons/swap.sh' | sudo bash
+    curl -L 'https://s.repo.host/addons/swap.sh' -o /tmp/swap.sh && chmod +x /tmp/swap.sh && sudo bash /tmp/swap.sh
   fi
+  rm /tmp/zram.sh /tmp/swap.sh
 }
 
 install_caddy() {
