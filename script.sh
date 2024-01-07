@@ -66,7 +66,7 @@ print_detailed_help() {
 
 print_help() {
   cat << EOF
-Usage: $script_name <command> [options]
+Usage: bash $script_name <command> [options]
 
 Available commands:
   ssh-key        Configure the SSH key for secure remote access.
@@ -82,7 +82,7 @@ Available commands:
   caddy          Install Caddy web server.
   create-user    Create a new user with sudo privileges.
 
-For detailed help, use: $0 help <command>
+For detailed help, use: bash $0 help <command>
 EOF
 }
 
