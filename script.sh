@@ -68,7 +68,7 @@ print_help() {
   cat << EOF
 Usage: bash $script_name <command> [options]
 
-Version: 2024.01.08
+Version: 2024.01.08-8de07412-f136-4d41-a562-2feb45b7da18
 
 Available commands:
   ssh-key        Configure the SSH key for secure remote access.
