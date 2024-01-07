@@ -245,7 +245,7 @@ add_swap() {
   else
     curl -sSL 'https://s.repo.host/addons/swap.sh' -o /tmp/swap.sh && chmod +x /tmp/swap.sh && sudo bash /tmp/swap.sh
   fi
-  rm /tmp/zram.sh /tmp/swap.sh
+  rm -rf /tmp/zram.sh /tmp/swap.sh
 }
 
 install_caddy() {
@@ -263,7 +263,7 @@ enable_warp() {
   else
     curl -sSL 'https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh' -o /tmp/menu.sh && chmod +x /tmp/menu.sh && sudo bash /tmp/menu.sh
   fi
-  rm /tmp/warp-go.sh /tmp/menu.sh
+  rm -rf /tmp/warp-go.sh /tmp/menu.sh
 }
 
 current_user=$(whoami)
