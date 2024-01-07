@@ -31,7 +31,7 @@ print_detailed_help() {
       ;;
     reinstall)
       echo "Usage: $script_name reinstall"
-      echo "Perform a clean reinstallation of Debian. You can provide an optional custom password and Debian version."
+      echo "Perform a clean reinstallation of Debian."
       ;;
     bbr)
       echo "Usage: $script_name bbr"
