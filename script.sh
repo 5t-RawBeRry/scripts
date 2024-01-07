@@ -30,12 +30,12 @@ print_detailed_help() {
       echo "Set up a user-friendly shell and development tools."
       ;;
     reinstall)
-      echo "Usage: $script_name reinstall [password] [debian_version]"
+      echo "Usage: $script_name reinstall"
       echo "Perform a clean reinstallation of Debian. You can provide an optional custom password and Debian version."
       ;;
     bbr)
-      echo "Usage: $script_name bbr [-s]"
-      echo "Optimize network performance with BBR. Use -s to apply system settings without kernel update."
+      echo "Usage: $script_name bbr"
+      echo "Optimize network performance with BBR."
       ;;
     zen)
       echo "Usage: $script_name zen [-lqx]"
@@ -165,13 +165,10 @@ setup_environment() {
 }
 
 install_bbr() {
-  display_info "Initializing BBR installation..."
-  setup=$1
   [[ -f "/etc/debian_version" ]] || return
-  if [[ "$setup" == "-s" ]]; then
-    sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
-    sudo bash -c 'echo -n > /etc/sysctl.conf'
-    sudo bash -c 'cat << EOF > /etc/sysctl.conf
+  sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
+  sudo bash -c 'echo -n > /etc/sysctl.conf'
+  sudo bash -c 'cat << EOF > /etc/sysctl.conf
 vm.swappiness = 0
 fs.file-max = 1024000
 net.core.rmem_max = 134217728
@@ -210,14 +207,8 @@ net.ipv6.conf.all.forwarding = 1
 net.ipv6.conf.default.forwarding = 1
 net.ipv4.tcp_slow_start_after_idle = 0
 EOF'
-    sudo sysctl -p && display_success "Sysctl configuration updated successfully!"
-  else
-    curl -o /tmp/linux-headers.deb https://s.repo.host/addons/linux-headers-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
-    curl -o /tmp/linux-image.deb https://s.repo.host/addons/linux-image-6.4.0-m00nf4ce_6.4.0-g6e321d1c986a-1_amd64.deb
-    sudo apt install /tmp/linux-*.deb -y && display_info "Kernel packages installed."
-    rm /tmp/linux-*.deb
-  fi
-  display_success "BBR installation completed."
+  sudo sysctl -p && display_info "Sysctl configuration updated successfully!"
+  display_success "BBR enable completed."
 }
 
 install_docker() {
@@ -282,7 +273,7 @@ case "$1" in
   system)         configure_system ;;
   environment)    setup_environment ;;
   reinstall)      reinstall_debian ;;
-  bbr)            shift; install_bbr "$@" ;;
+  bbr)            install_bbr ;;
   zen)            shift; install_zen "$@" ;;
   swap)           shift; add_swap "$@" ;;
   warp)           shift; enable_warp "$@" ;;
