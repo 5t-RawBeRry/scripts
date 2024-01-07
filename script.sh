@@ -232,9 +232,9 @@ install_zen() {
 
 add_swap() {
   if [[ "$1" == "-zram" ]]; then
-    curl -L 'https://s.repo.host/addons/zram.sh' -o /tmp/zram.sh && chmod +x /tmp/zram.sh && sudo bash /tmp/zram.sh
+    curl -sSL 'https://s.repo.host/addons/zram.sh' -o /tmp/zram.sh && chmod +x /tmp/zram.sh && sudo bash /tmp/zram.sh
   else
-    curl -L 'https://s.repo.host/addons/swap.sh' -o /tmp/swap.sh && chmod +x /tmp/swap.sh && sudo bash /tmp/swap.sh
+    curl -sSL 'https://s.repo.host/addons/swap.sh' -o /tmp/swap.sh && chmod +x /tmp/swap.sh && sudo bash /tmp/swap.sh
   fi
   rm /tmp/zram.sh /tmp/swap.sh
 }
@@ -250,9 +250,9 @@ install_caddy() {
 
 enable_warp() {
   if [[ "$1" == "-go" ]]; then
-    curl -L 'https://gitlab.com/fscarmen/warp/-/raw/main/warp-go.sh' -o /tmp/warp-go.sh && chmod +x /tmp/warp-go.sh && sudo bash /tmp/warp-go.sh
+    curl -sSL 'https://gitlab.com/fscarmen/warp/-/raw/main/warp-go.sh' -o /tmp/warp-go.sh && chmod +x /tmp/warp-go.sh && sudo bash /tmp/warp-go.sh
   else
-    curl -L 'https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh' -o /tmp/menu.sh && chmod +x /tmp/menu.sh && sudo bash /tmp/menu.sh
+    curl -sSL 'https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh' -o /tmp/menu.sh && chmod +x /tmp/menu.sh && sudo bash /tmp/menu.sh
   fi
   rm /tmp/warp-go.sh /tmp/menu.sh
 }

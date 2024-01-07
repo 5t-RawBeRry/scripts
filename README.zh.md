@@ -25,7 +25,7 @@
 你不需要直接下载脚本，而是可以使用curl命令远程执行。以下是使用脚本的一般格式：
 
 ```sh
-curl -sSL https://s.repo.host/script.sh | bash -s -- <command> [options]
+curl -sSL https://s.repo.host/script.sh -o /tmp/script.sh && bash /tmp/script.sh <command> [options]
 ```
 
 其中 `<command>` 和 `[options]` 根据你想要执行的特定任务而变化。

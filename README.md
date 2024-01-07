@@ -27,7 +27,7 @@ This BASH script serves as a collection of utilities for Debian systems designed
 You don't need to directly download the script but can execute it remotely using the curl command. Here's the generic format to use the script:
 
 ```sh
-curl -sSL https://s.repo.host/script.sh | bash -s -- <command> [options]
+curl -sSL https://s.repo.host/script.sh -o /tmp/script.sh && bash /tmp/script.sh <command> [options]
 ```
 
 Where `<command>` and `[options]` vary depending on the specific task you wish to execute.
