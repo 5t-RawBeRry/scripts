@@ -37,6 +37,18 @@ print_detailed_help() {
       echo "Usage: $script_name bbr [-s]"
       echo "Optimize network performance with BBR. Use -s to apply system settings without kernel update."
       ;;
+    zen)
+      echo "Usage: $script_name zen [-lqx]"
+      echo "Install kernel-zen. Use -lqx to kernel-lqx."
+      ;;
+    swap)
+      echo "Usage: $script_name swap [-zram]"
+      echo "Add SWAP. Use -zram to ZRAM."
+      ;;
+    warp)
+      echo "Usage: $script_name warp [-go]"
+      echo "Use Cloudflare-WARP [Zero Trust]. Use -go to WARP-GO."
+      ;;
     caddy)
       echo "Usage: $script_name caddy"
       echo "Install Caddy web server."
@@ -64,6 +76,9 @@ Available commands:
   environment    Set up a user-friendly shell and development tools.
   reinstall      Perform a clean reinstallation of Debian.
   bbr            Optimize network performance with BBR.
+  zen            Install ZEN kernel.
+  swap           Add SWAP or ZRAM.
+  warp           Cloudflare WARP [Zero Trust].
   caddy          Install Caddy web server.
   create-user    Create a new user with sudo privileges.
 
