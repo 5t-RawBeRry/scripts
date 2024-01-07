@@ -68,6 +68,8 @@ print_help() {
   cat << EOF
 Usage: bash $script_name <command> [options]
 
+Version: 2024.01.08
+
 Available commands:
   ssh-key        Configure the SSH key for secure remote access.
   ssh            Fine-tune the SSH server settings.
@@ -83,6 +85,7 @@ Available commands:
   create-user    Create a new user with sudo privileges.
 
 For detailed help, use: bash $0 help <command>
+
 EOF
 }
 
