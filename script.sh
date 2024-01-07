@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ $0 != bash ]] && script_name=$0 || script_name="curl -sSL https://s.repo.host/script.sh | bash -s --"
+[[ $0 != bash ]] && script_name=$0 || script_name="curl -sSL https://s.repo.host/script.sh -o /tmp/script.sh && bash /tmp/script.sh "
 
 display_info()    { echo -e "\e[34m[I]\e[0m $1"; }
 display_success() { echo -e "\e[32m[S]\e[0m $1"; }
