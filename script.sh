@@ -272,7 +272,6 @@ case "$1" in
   swap)           shift; add_swap "$@" ;;
   warp)           shift; enable_warp "$@" ;;
   caddy)          install_caddy ;;
-  warp)           enable_warp ;;
   create-user)    shift; create_user "$@" ;;
   *)              print_help ;;
 esac
