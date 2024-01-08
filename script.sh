@@ -53,6 +53,10 @@ print_detailed_help() {
       echo "Usage: $script_name caddy"
       echo "Install Caddy web server."
       ;;
+    v2bx)
+      echo "Usage: $script_name v2bx"
+      echo "Install V2BX server."
+      ;;
     create-user)
       echo "Usage: $script_name create-user [username] [password]"
       echo "Create a new user with sudo privileges. You need to provide a username and a password."
@@ -81,6 +85,7 @@ Available commands:
   zen            Install ZEN kernel.
   swap           Add SWAP or ZRAM.
   warp           Cloudflare WARP [Zero Trust].
+  v2bx           Install V2BX.
   caddy          Install Caddy web server.
   create-user    Create a new user with sudo privileges.
 
@@ -261,10 +266,16 @@ enable_warp() {
   if [[ "$1" == "-go" ]]; then
     curl -sSL 'https://gitlab.com/fscarmen/warp/-/raw/main/warp-go.sh' -o /tmp/warp-go.sh && chmod +x /tmp/warp-go.sh && sudo bash /tmp/warp-go.sh
   else
-    curl -sSL 'https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh' -o /tmp/menu.sh && chmod +x /tmp/menu.sh && sudo bash /tmp/menu.sh
+    curl -sSL 'https://gitlab.com/fscarmen/warp/-/raw/main/menu.sh' -o /tmp/warp.sh && chmod +x /tmp/warp.sh && sudo bash /tmp/warp.sh
   fi
   rm -rf /tmp/warp-go.sh /tmp/menu.sh
 }
+
+install_v2bx() {
+  curl -sSL 'https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh' -o /tmp/v2bx.sh && chmod +x /tmp/v2bx.sh && sudo bash /tmp/v2bx.sh
+}
+
+chmod +x /tmp/script.sh
 
 current_user=$(whoami)
 
@@ -281,6 +292,7 @@ case "$1" in
   swap)           shift; add_swap "$@" ;;
   warp)           shift; enable_warp "$@" ;;
   caddy)          install_caddy ;;
+  v2bx)           install_v2bx ;;
   create-user)    shift; create_user "$@" ;;
   *)              print_help ;;
 esac
