@@ -239,7 +239,7 @@ install_zen() {
     sudo apt install gpg wget -y
     wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
     echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
-    sudo apt update && sudo apt install linux-xanmod-x64v4
+    sudo apt update && sudo apt install linux-xanmod-x64v4 -y
   fi
   display_success "ZEN installation completed."
 }
@@ -275,6 +275,16 @@ install_v2bx() {
   curl -sSL 'https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh' -o /tmp/v2bx.sh && chmod +x /tmp/v2bx.sh && sudo bash /tmp/v2bx.sh
 }
 
+remove_kernel() {
+  current_kernel=$(uname -r)
+  dpkg -l | grep linux-image | awk '{print $2}' | grep -v "$current_kernel" | while read -r kernel; do
+      display_info "Removing kernel: $kernel"
+      sudo apt remove --purge "$kernel" -y
+      display_success "Removed kernel: $kernel"
+  done
+  sudo update-grub2
+}
+
 chmod +x /tmp/script.sh
 
 current_user=$(whoami)
@@ -293,6 +303,7 @@ case "$1" in
   warp)           shift; enable_warp "$@" ;;
   caddy)          install_caddy ;;
   v2bx)           install_v2bx ;;
+  remove-kernel)  remove_kernel ;;
   create-user)    shift; create_user "$@" ;;
   *)              print_help ;;
 esac
