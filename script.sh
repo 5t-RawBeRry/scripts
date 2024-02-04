@@ -229,7 +229,7 @@ install_docker() {
 
 reinstall_debian() {
   display_info "Initializing Debian reinstallation..."
-  curl -sSL https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh | bash -s --  -debian 12 -pwd 'Kilin111' -filesystem "xfs" -swap "512" -mirror "http://mirror-cdn.xtom.com"
+  curl -sSL https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh | bash -s --  -debian 12 -pwd 'Kilin111' -filesystem "xfs" -swap "512" -mirror "http://mirror-cdn.xtom.com/debian"
 }
 
 install_zen() {
