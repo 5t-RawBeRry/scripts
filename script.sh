@@ -9,6 +9,10 @@ display_error()   { echo -e "\e[31m[E]\e[0m $1"; exit 1; }
 
 print_detailed_help() {
   case "$1" in
+    alpine-init)
+      echo "Usage: $script_name alpine"
+      echo "Configure the Alpine~."
+      ;;
     ssh-key)
       echo "Usage: $script_name ssh-key"
       echo "Configure the SSH key for secure remote access."
@@ -72,9 +76,10 @@ print_help() {
   cat << EOF
 Usage: bash $script_name <command> [options]
 
-Version: 2024.01.08-8de07412-f136-4d41-a562-2feb45b7da18
+Version: 2024.03.18-0d40c199-d53f-44bc-aafe-d6d8ad08e8ea
 
 Available commands:
+  alpine-init    Configure the Alpine~
   ssh-key        Configure the SSH key for secure remote access.
   ssh            Fine-tune the SSH server settings.
   docker         Install Docker for containerized applications.
@@ -94,7 +99,7 @@ For detailed help, use: bash $0 help <command>
 EOF
 }
 
-if [[ ! -f "/etc/debian_version" && "$1" != "reinstall" && "$1" != "ssh-key" && "$1" != "ssh" && "$1" != "create-user" ]]; then
+if [[ ! -f "/etc/debian_version" && "$1" != "reinstall" && "$1" != "ssh-key" && "$1" != "ssh" && "$1" != "create-user" && "$1" != "bbr" && "$1" != "alpine-init" ]]; then
   display_error "Unsupported system. Script for Debian only."
 fi
 
@@ -179,8 +184,8 @@ install_bbr() {
   sudo bash -c 'cat << EOF > /etc/sysctl.conf
 vm.swappiness = 0
 fs.file-max = 1024000
-net.core.rmem_max = 134217728
-net.core.wmem_max = 134217728
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
 net.core.netdev_max_backlog = 250000
 net.core.somaxconn = 1024000
 net.core.default_qdisc = fq_pie
@@ -275,6 +280,10 @@ install_v2bx() {
   curl -sSL 'https://raw.githubusercontent.com/wyx2685/V2bX-script/master/install.sh' -o /tmp/v2bx.sh && chmod +x /tmp/v2bx.sh && sudo bash /tmp/v2bx.sh
 }
 
+install_v2bx() {
+  curl -sSL 'https://s.repo.host/addons/alpine-scripts.sh' -o /tmp/alpine-scripts.sh && chmod +x /tmp/alpine-scripts.sh && sudo bash /tmp/alpine-scripts.sh
+}
+
 remove_kernel() {
   current_kernel=$(uname -r)
   dpkg -l | grep linux-image | awk '{print $2}' | grep -v "$current_kernel" | while read -r kernel; do
@@ -291,6 +300,7 @@ current_user=$(whoami)
 
 case "$1" in
   help)           shift; print_detailed_help "$@" ;;
+  alpine-init)    alpine-init ;;
   ssh-key)        configure_ssh_key ;;
   ssh)            configure_ssh ;;
   docker)         install_docker ;;
