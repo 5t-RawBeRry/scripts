@@ -61,6 +61,12 @@ display_success "/etc/apk/repositories 源地址已完全替换为 mirror-cdn.xt
 
 apk update && display_success "软件源已更新"
 
+apk upgrade && display_success "系统已升级"
+
 /etc/init.d/sshd restart && display_success "SSH 服务重启成功。配置更新完成。"
+
+random_password=$(cat /proc/sys/kernel/random/uuid)
+root_user="root"
+echo "$root_user:$random_password" | chpasswd && display_success "$root_user 密码已重置为 $random_password."
 
 display_success "Alpine 已配置完毕~"
