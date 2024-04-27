@@ -70,3 +70,12 @@ root_user="root"
 echo "$root_user:$random_password" | chpasswd && display_success "$root_user 密码已重置为 $random_password."
 
 display_success "Alpine 已配置完毕~"
+
+read -p "是否要重启系统？(y/n): " restart_option
+if [ "$restart_option" = "y" ]; then
+    reboot
+elif [ "$restart_option" = "n" ]; then
+    display_info "系统不会重启。"
+else
+    display_error "无效的选项。系统不会重启。"
+fi
