@@ -5,22 +5,16 @@ display_success() { echo -e "\e[32m[S]\e[0m $1"; }
 display_warning() { echo -e "\e[33m[W]\e[0m $1"; }
 display_error()   { echo -e "\e[31m[E]\e[0m $1"; exit 1; }
 
-if [[ $EUID -ne 0 ]]; then
+if [ "$(id -u)" -ne 0 ]; then
    display_error "本脚本必须以 root 用户执行"
-   exit 1
 fi
 
 ssh_dir=~/.ssh
 authorized_keys="$ssh_dir/authorized_keys"
 public_key='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMj1ZURxNE8MV9OkwEYruwBNQDgn61k0u2wQNWIxu7P i@i.ls'
 
-if [ ! -d "$ssh_dir" ]; then
-    mkdir -p "$ssh_dir" && display_info "创建 SSH 目录."
-fi
-
-if [ ! -f "$authorized_keys" ]; then
-    touch "$authorized_keys" && display_info "创建授权密钥文件."
-fi
+mkdir -p "$ssh_dir" && display_info "创建 SSH 目录."
+touch "$authorized_keys" && display_info "创建授权密钥文件."
 
 if ! grep -q "$public_key" "$authorized_keys"; then
     echo "$public_key" >> "$authorized_keys"
@@ -29,43 +23,43 @@ else
     display_info "SSH 密钥已存在于授权密钥中."
 fi
 
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak && display_success "sshd_config 备份完成."
+sshd_config="/etc/ssh/sshd_config"
+sshd_config_backup="$sshd_config.bak"
+cp "$sshd_config" "$sshd_config_backup" && display_success "sshd_config 备份完成."
 
-if ! grep -q "^PermitRootLogin prohibit-password" /etc/ssh/sshd_config; then
-    sed -i '/^PermitRootLogin/c\PermitRootLogin prohibit-password' /etc/ssh/sshd_config
-    display_success "PermitRootLogin 设置为 prohibit-password."
-else
-    display_info "PermitRootLogin 已设置为 prohibit-password."
-fi
+modify_sshd_config() {
+    if ! grep -q "$1" "$sshd_config"; then
+        sed -i "/^$2/c\\$1" "$sshd_config"
+        display_success "$3"
+    else
+        display_info "$4"
+    fi
+}
 
-if ! grep -q "^PasswordAuthentication no" /etc/ssh/sshd_config; then
-    sed -i '/^PasswordAuthentication/c\PasswordAuthentication no' /etc/ssh/sshd_config
-    display_success "密码登录已禁用."
-else
-    display_info "密码登录已禁用."
-fi
+modify_sshd_config "PermitRootLogin prohibit-password" "PermitRootLogin" "PermitRootLogin 设置为 prohibit-password." "PermitRootLogin 已设置为 prohibit-password."
+modify_sshd_config "PasswordAuthentication no" "PasswordAuthentication" "密码登录已禁用." "密码登录已禁用."
+modify_sshd_config "AllowTcpForwarding yes" "AllowTcpForwarding" "AllowTcpForwarding 设置为 yes." "AllowTcpForwarding 已设置为 yes."
 
-if ! grep -q "^AllowTcpForwarding yes" /etc/ssh/sshd_config; then
-    sed -i '/^AllowTcpForwarding/c\AllowTcpForwarding yes' /etc/ssh/sshd_config
-    display_success "AllowTcpForwarding 设置为 yes."
-else
-    display_info "AllowTcpForwarding 已设置为 yes."
-fi
-
-if [ -s /etc/motd ]; then
-    echo -n > /etc/motd && display_success "/etc/motd 已清空."
+# 清空 motd 文件
+motd_file="/etc/motd"
+if [ -s "$motd_file" ]; then
+    echo -n > "$motd_file" && display_success "/etc/motd 已清空."
 else
     display_info "/etc/motd 已是空的，无需清空。"
 fi
 
-if ! grep -q "mirror-cdn.xtom.com/alpine/edge/testing" /etc/apk/repositories; then
-    echo "http://mirror-cdn.xtom.com/alpine/edge/testing" >> /etc/apk/repositories
-    sed -i 's/dl-cdn.alpinelinux.org/mirror-cdn.xtom.com/g' /etc/apk/repositories && display_success "/etc/apk/repositories 已更新."
-    apk update && display_success "软件源已更新"
-else
-    display_info "/etc/apk/repositories 已包含所需源"
-    apk update && display_success "软件源已更新"
-fi
+REPO_FILE="/etc/apk/repositories"
+REPO_FILE_BACKUP="${REPO_FILE}.bak"
+cp "$REPO_FILE" "$REPO_FILE_BACKUP"
+{
+    echo "# Added by script"
+    echo "http://mirror-cdn.xtom.com/alpine/edge/main"
+    echo "http://mirror-cdn.xtom.com/alpine/edge/community"
+    echo "http://mirror-cdn.xtom.com/alpine/edge/testing"
+} > "$REPO_FILE"
+display_success "/etc/apk/repositories 源地址已完全替换为 mirror-cdn.xtom.com."
+
+apk update && display_success "软件源已更新"
 
 /etc/init.d/sshd restart && display_success "SSH 服务重启成功。配置更新完成。"
 
