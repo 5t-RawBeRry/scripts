@@ -94,8 +94,8 @@ root_user="root"
 echo "$root_user:$random_password" | chpasswd && display_success "$root_user 密码已重置为 $random_password."
 
 colo=$(echo "$trace_info" | grep colo= | cut -d '=' -f2)
-random_part=$(tr -dc 'A-Z0-9' </dev/urandom | head -c 8)
-new_hostname="SRV-$colo-$random_part"
+random_part=$(tr -dc 'A-Z0-9' </dev/urandom | head -c 6)
+new_hostname="$colo-SRV-$random_part"
 hostname $new_hostname && display_success "主机名已更改为 $new_hostname."
 
 display_success "Alpine 已配置完毕~"
