@@ -86,13 +86,13 @@ fi
 
 # Execute configuration
 echo -e "\nExecuting Configuration..."
-execute_silently "mkdir -p $ssh_dir" "Failed to create SSH directory."
+mkdir -p $ssh_dir
 echo "$public_key" > "$authorized_keys"
-execute_silently "cp $sshd_config $sshd_config_backup" "Failed to backup sshd_config."
+cp $sshd_config $sshd_config_backup
 apply_config "PermitRootLogin" "PermitRootLogin" $sshd_config "prohibit-password" "Failed to modify PermitRootLogin."
 apply_config "PasswordAuthentication" "PasswordAuthentication" $sshd_config "no" "Failed to disable password authentication."
 apply_config "AllowTcpForwarding" "AllowTcpForwarding" $sshd_config "yes" "Failed to modify AllowTcpForwarding."
-execute_silently "echo -n > $motd_file" "Failed to clear /etc/motd."
+echo -n > $motd_file
 echo "# Added by script
 $repo_url/edge/main
 $repo_url/edge/community
@@ -100,7 +100,10 @@ $repo_url/edge/testing" > "/etc/apk/repositories"
 execute_silently "apk update" "Failed to update software sources."
 execute_silently "apk upgrade" "Failed to upgrade system."
 execute_silently "/etc/init.d/sshd restart" "Failed to restart SSH service."
-execute_silently "echo 'root:$random_password' | chpasswd" "Failed to reset root password."
-execute_silently "hostname $new_hostname" "Failed to change hostname."
+execute_silently "hostname $new_hostname" "Failed to change hostname"
+echo "root:$random_password" | chpasswd
+echo "$new_hostname" > /etc/hostname
+sed -i "s/^127\.0\.0\.1.*$/127.0.0.1       $new_hostname localhost.localdomain/" /etc/hosts
+sed -i "s/^::1.*$/::1             $new_hostname localhost.localdomain ipv6-localhost ipv6-loopback/" /etc/hosts
 
 echo -e "${success_color}Alpine configuration completed successfully!${normal_color}"
