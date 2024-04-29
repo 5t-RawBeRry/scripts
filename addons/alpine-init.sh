@@ -49,7 +49,7 @@ location=$(echo "$trace_info" | grep loc= | cut -d '=' -f2)
 random_password=$(cat /proc/sys/kernel/random/uuid)
 random_part=$(tr -dc 'A-Z0-9' </dev/urandom | head -c 8)
 colo=$(echo "$trace_info" | grep colo= | cut -d '=' -f2)
-new_hostname="SRV-$colo-$random_part"
+new_hostname="$colo-SRV-$random_part"
 
 # Determine region and repository
 repo_url="http://mirror-cdn.xtom.com/alpine"
