@@ -11,7 +11,19 @@ fi
 
 ssh_dir=~/.ssh
 authorized_keys="$ssh_dir/authorized_keys"
-public_key='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMj1ZURxNE8MV9OkwEYruwBNQDgn61k0u2wQNWIxu7P i@i.ls'
+default_public_key='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMj1ZURxNE8MV9OkwEYruwBNQDgn61k0u2wQNWIxu7P i@i.ls'
+
+if [ "$1" ]; then
+    display_info "从 GitHub 获取公钥."
+    public_key=$(curl -s https://github.com/$1.keys | head -n 1)
+    if [ -z "$public_key" ]; then
+        display_error "从 GitHub 获取公钥失败."
+    else
+        display_success "从 GitHub 成功获取公钥."
+    fi
+else
+    public_key="$default_public_key"
+fi
 
 mkdir -p "$ssh_dir" && display_info "创建 SSH 目录."
 touch "$authorized_keys" && display_info "创建授权密钥文件."
