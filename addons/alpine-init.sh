@@ -13,11 +13,6 @@ display_error() {
     exit 1;
 }
 
-# Execute commands silently, log only on error
-execute_silently() {
-    $1 > /dev/null 2>&1 || display_error "$2"
-}
-
 # Check current setting and apply new setting if necessary
 apply_config() {
     current_setting=$(grep "^$2" $3)
@@ -97,13 +92,13 @@ echo "# Added by script
 $repo_url/edge/main
 $repo_url/edge/community
 $repo_url/edge/testing" > "/etc/apk/repositories"
-execute_silently "apk update" "Failed to update software sources."
-execute_silently "apk upgrade" "Failed to upgrade system."
-execute_silently "/etc/init.d/sshd restart" "Failed to restart SSH service."
-execute_silently "hostname $new_hostname" "Failed to change hostname"
+apk update
+apk upgrade
+/etc/init.d/sshd restart
+hostname $new_hostname
 echo "root:$random_password" | chpasswd
 echo "$new_hostname" > /etc/hostname
-sed -i "s/^127\.0\.0\.1.*$/127.0.0.1       $new_hostname localhost.localdomain/" /etc/hosts
-sed -i "s/^::1.*$/::1             $new_hostname localhost.localdomain ipv6-localhost ipv6-loopback/" /etc/hosts
+sed -i "s/^127\.0\.0\.1.*$/127.0.0.1       $new_hostname localhost localhost.localdomain/" /etc/hosts
+sed -i "s/^::1.*$/::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback/" /etc/hosts
 
 echo -e "${success_color}Alpine configuration completed successfully!${normal_color}"
