@@ -16,11 +16,11 @@ display_error() {
 # Check current setting and apply new setting if necessary
 apply_config() {
     current_setting=$(grep "^$2" $3)
-#    echo "Current setting for $2 in $3: $current_setting"
+    echo "Current setting for $2 in $3: $current_setting"
     if [ "$current_setting" != "$2 $4" ]; then
         sed_command="sed -i 's/^$2 .*/$2 $4/' $3"
 #        echo "Applying: $sed_command"
-#        echo "New setting for $2 in $3: $new_setting"
+        echo "New setting for $2 in $3: $new_setting"
         eval $sed_command
         if [ $? -ne 0 ]; then
             display_error "$5"
