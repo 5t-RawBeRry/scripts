@@ -29,10 +29,6 @@ acme:
     - $PASS.$DOMAIN
   email: hysteria@$DOMAIN
 
-tls:
-  cert: /etc/hysteria/server.crt
-  key: /etc/hysteria/server.key
-
 speedTest: True
 
 auth:
