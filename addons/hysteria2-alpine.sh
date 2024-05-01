@@ -3,11 +3,12 @@
 apk add wget nftables
 
 PASS="$(cat /proc/sys/kernel/random/uuid)"
+PASSWD=$PASS
 DOMAIN="hysteria.example.com"
 TYPE="server"
 
 if [ -n "$2" ]; then
-  PASS=$2
+  PASSWD=$2
 fi
 
 if [ -n "$1" ]; then
@@ -25,7 +26,7 @@ listen: :443
 
 acme:
   domains:
-    - $DOMAIN
+    - $PASS.$DOMAIN
   email: hysteria@$DOMAIN
 
 tls:
@@ -36,7 +37,7 @@ speedTest: True
 
 auth:
   type: password
-  password: $PASS
+  password: $PASSWD
 
 masquerade:
   listenHTTP: :80 
@@ -51,7 +52,7 @@ EOF
   cat << EOF
 server: $DOMAIN:443 
 
-auth: $PASS
+auth: $PASSWD
 
 bandwidth: 
   up: 200 mbps
