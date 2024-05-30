@@ -20,7 +20,6 @@ apply_config() {
     if [ "$current_setting" != "$2 $4" ]; then
         sed_command="sed -i 's/^$2 .*/$2 $4/' $3"
         echo "Applying: $sed_command"
-#        echo "New setting for $2 in $3: $new_setting"
         eval $sed_command
         if [ $? -ne 0 ]; then
             display_error "$5"
@@ -100,5 +99,12 @@ echo "root:$random_password" | chpasswd
 echo "$new_hostname" > /etc/hostname
 sed -i "s/^127\.0\.0\.1.*$/127.0.0.1       $new_hostname localhost localhost.localdomain/" /etc/hosts
 sed -i "s/^::1.*$/::1             $new_hostname localhost localhost.localdomain ipv6-localhost ipv6-loopback/" /etc/hosts
+
+# Enable BBR
+echo -e "\nEnabling BBR..."
+echo "tcp_bbr" > /etc/modules-load.d/bbr.conf
+echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+sysctl -p
 
 echo -e "${success_color}Alpine configuration completed successfully!${normal_color}"
