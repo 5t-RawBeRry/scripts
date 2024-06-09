@@ -48,10 +48,10 @@ colo=$(echo "$trace_info" | grep colo= | cut -d '=' -f2)
 new_hostname="$colo-SRV-$random_part"
 
 # Determine region and repository
-repo_url="http://mirror-cdn.xtom.com/debian"
+repo_url="https://mirror-cdn.xtom.com"
 repo_region="Non-China region"
 if [[ "$location" == "CN" ]]; then
-    repo_url="http://mirrors.ustc.edu.cn/debian"
+    repo_url="https://mirrors.ustc.edu.cn"
     repo_region="China region"
 fi
 
@@ -117,15 +117,14 @@ net.ipv4.tcp_fin_timeout=30
 net.core.netdev_max_backlog=250000
 net.core.somaxconn=65535
 net.ipv4.tcp_max_syn_backlog=8192
-net.ipv4.ip_local_port_range='1024 65535'
 EOF
 sysctl -p
 
 # Download and install specified deb packages
 deb_urls=(
-    "https://static.codemao.cn/bfs/ae70ac43-9a38-420d-b33a-20477ea55fca.deb"
-    "https://static.codemao.cn/bfs/680e7312-3845-434e-9532-34f803111b91.deb"
-    "https://static.codemao.cn/bfs/6efaf83f-b612-47a9-b892-0e34c1f9a3e5.deb"
+    "https://p.repo.host/c1p2/https://static.codemao.cn/bfs/ae70ac43-9a38-420d-b33a-20477ea55fca.deb"
+    "https://p.repo.host/c1p2/https://static.codemao.cn/bfs/680e7312-3845-434e-9532-34f803111b91.deb"
+    "https://p.repo.host/c1p2/https://static.codemao.cn/bfs/6efaf83f-b612-47a9-b892-0e34c1f9a3e5.deb"
 )
 
 for url in "${deb_urls[@]}"; do
