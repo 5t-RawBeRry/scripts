@@ -91,7 +91,7 @@ apply_config "AllowTcpForwarding" "AllowTcpForwarding" $sshd_config "yes" "Faile
 
 # Clear and update /etc/motd
 echo -n > $motd_file
-echo "# Added by script" > $motd_file
+echo "# 5t-RawBeRry's SRV." > $motd_file
 
 # Configure sources.list using sed to replace only the URL
 sed -i "s|http[s]*://[^/]*/|$repo_url/|g" /etc/apt/sources.list
