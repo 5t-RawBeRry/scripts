@@ -109,7 +109,7 @@ sed -i "s/^::1.*$/::1             $new_hostname localhost localhost.localdomain 
 # Enable BBR and additional network optimizations
 display_message $highlight_color "\nEnabling BBR and network optimizations..."
 cat <<EOF >> /etc/sysctl.conf
-net.core.default_qdisc=fq
+net.core.default_qdisc=fq_pie
 net.ipv4.tcp_congestion_control=bbr
 net.ipv4.tcp_fastopen=3
 net.ipv4.tcp_tw_reuse=1
