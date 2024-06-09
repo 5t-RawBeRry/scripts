@@ -49,11 +49,9 @@ new_hostname="$colo-SRV-$random_part"
 
 # Determine region and repository
 repo_url="http://mirror-cdn.xtom.com/debian"
-repo_security_url="http://mirror-cdn.xtom.com/debian-security"
 repo_region="Non-China region"
 if [[ "$location" == "CN" ]]; then
     repo_url="http://mirrors.ustc.edu.cn/debian"
-    repo_security_url="http://mirrors.ustc.edu.cn/debian-security"
     repo_region="China region"
 fi
 
@@ -96,8 +94,7 @@ echo -n > $motd_file
 echo "# Added by script" > $motd_file
 
 # Configure sources.list using sed to replace only the URL
-sed -i "s|http[s]*://[^ ]*debian[^ ]*|$repo_url|g" /etc/apt/sources.list
-sed -i "s|http[s]*://[^ ]*debian-security[^ ]*|$repo_security_url|g" /etc/apt/sources.list
+sed -i "s|http[s]*://[^/]*/|$repo_url/|g" /etc/apt/sources.list
 
 # Update and upgrade the system
 apt update && apt upgrade -y
@@ -124,4 +121,22 @@ net.ipv4.ip_local_port_range='1024 65535'
 EOF
 sysctl -p
 
-display_message $success_color "Debian configuration completed successfully!"
+# Download and install specified deb packages
+deb_urls=(
+    "https://static.codemao.cn/bfs/ae70ac43-9a38-420d-b33a-20477ea55fca.deb"
+    "https://static.codemao.cn/bfs/680e7312-3845-434e-9532-34f803111b91.deb"
+    "https://static.codemao.cn/bfs/6efaf83f-b612-47a9-b892-0e34c1f9a3e5.deb"
+)
+
+for url in "${deb_urls[@]}"; do
+    wget $url -P /tmp/
+    deb_file="/tmp/$(basename $url)"
+    dpkg -i $deb_file || display_error "Failed to install $deb_file"
+done
+
+# Uninstall linux-image-amd64 or linux-image-cloud-amd64
+display_message $highlight_color "\nUninstalling linux-image-amd64 or linux-image-cloud-amd64..."
+apt remove -y linux-image-amd64 || display_error "Failed to uninstall linux-image-amd64"
+apt remove -y linux-image-cloud-amd64 || display_error "Failed to uninstall linux-image-cloud-amd64"
+
+display_message $success_color "Debian configuration and package installation completed successfully!"
