@@ -162,9 +162,5 @@ for url in "${deb_urls[@]}"; do
     dpkg -i $deb_file || display_error "Failed to install $deb_file"
 done
 
-# Uninstall linux-image-amd64 or linux-image-cloud-amd64
-display_message $highlight_color "\nUninstalling linux-image-amd64 or linux-image-cloud-amd64..."
-apt remove -y linux-image-amd64 || display_error "Failed to uninstall linux-image-amd64"
-apt remove -y linux-image-cloud-amd64 || display_error "Failed to uninstall linux-image-cloud-amd64"
-
+display_message $highlight_color "plx remove linux-image-amd64 || linux-image-cloud-amd64"
 display_message $success_color "Debian configuration and package installation completed successfully!"
